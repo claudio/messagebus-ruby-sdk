@@ -71,12 +71,14 @@ class MessagebusActionMailerClient < MessagebusApiClient
       :messageProperties => message_properties
     }
 
-    msg[:plaintextBody] = ( message.body ) ? "#{message.body}" : "No plaintext version was supplied."
-
     if message.multipart?
       msg[:plaintextBody] = (message.text_part) ? message.text_part.body.to_s : "No plaintext version was supplied."
       msg[:htmlBody] = message.html_part.body.to_s if message.html_part
+    else
+      msg[:htmlBody] = ( message.body ) ? "#{message.body}" : "No html version was supplied."
     end
+
+
 
     begin
       send_messages([msg])
