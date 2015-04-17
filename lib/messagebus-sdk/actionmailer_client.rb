@@ -40,6 +40,7 @@ class MessagebusActionMailerClient < MessagebusApiClient
     end
 
     custom_headers = {}
+    message_properties = {}
 
     custom_headers["bcc"] = message.bcc[0] if !message.bcc.nil? && message.bcc.length != 0
 
@@ -50,6 +51,10 @@ class MessagebusActionMailerClient < MessagebusApiClient
       else
         if f.name =~ /x-.*/i
           custom_headers[f.name] = f.value.to_s
+        end
+
+        if f.name =~ /x-message-property-(.+)/i
+          message_properties[$1] = f.value.to_s
         end
       end
     end
@@ -62,7 +67,8 @@ class MessagebusActionMailerClient < MessagebusApiClient
       :fromName => from_name,
       :returnPath => message.return_path,
       :sessionKey => session_key,
-      :customHeaders => custom_headers
+      :customHeaders => custom_headers,
+      :messageProperties => message_properties
     }
 
     msg[:plaintextBody] = ( message.body ) ? "#{message.body}" : "No plaintext version was supplied."
@@ -85,4 +91,3 @@ class MessagebusActionMailerClient < MessagebusApiClient
     address.match(/^(.*)\s<(.*?)>/)
   end
 end
-
