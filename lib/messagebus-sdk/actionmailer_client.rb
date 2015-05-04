@@ -43,6 +43,7 @@ class MessagebusActionMailerClient < MessagebusApiClient
     message_properties = {}
 
     custom_headers["bcc"] = message.bcc[0] if !message.bcc.nil? && message.bcc.length != 0
+    custom_headers["reply-to"] = message.reply_to[0] if !message.reply_to.nil? && message.reply_to.length != 0
 
     session_key = DEFAULT
     message.header.fields.each do |f|
